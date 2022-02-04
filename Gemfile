@@ -3,18 +3,19 @@ source 'https://rubygems.org'
 gem 'rake'
 gem 'hanami',       '~> 1.3'
 gem 'hanami-model', '~> 1.3'
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
+gem 'sidekiq_adhoc_job'
+gem 'sidekiq-throttled'
 
 gem 'pg'
+gem 'dotenv', '~> 2.4'
+gem 'httparty'
 
 group :development do
-  # Code reloading
-  # See: https://guides.hanamirb.org/projects/code-reloading
-  gem 'shotgun', platforms: :ruby
-  gem 'hanami-webconsole'
-end
+  gem 'shotgun'
 
-group :test, :development do
-  gem 'dotenv', '~> 2.4'
+  gem 'byebug'
 end
 
 group :test do

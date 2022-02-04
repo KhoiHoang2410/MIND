@@ -1,11 +1,21 @@
 require 'bundler/setup'
 require 'hanami/setup'
 require 'hanami/model'
+require 'sidekiq/web'
 require_relative '../lib/mind'
 require_relative '../apps/web/application'
 
 Hanami.configure do
-  mount Web::Application, at: '/'
+  middleware.use Rack::Session::Cookie, secret: ENV['SESSIONS_SECRET']
+
+  mount Web::Application, at: '/api'
+
+  Sidekiq::Web.use Rack::Auth::Basic, "Protected Area" do |username, password|
+    Rack::Utils.secure_compare(::Digest::SHA256.hexdigest(username), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_ADMIN_USER"])) &
+      Rack::Utils.secure_compare(::Digest::SHA256.hexdigest(password), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_ADMIN_PASSWORD"]))
+  end
+  
+  mount Sidekiq::Web, at: '/sidekiq'
 
   model do
     ##
