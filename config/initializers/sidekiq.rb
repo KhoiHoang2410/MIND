@@ -17,7 +17,7 @@ SidekiqAdhocJob.configure do |config|
   config.module_names =
     %w[
         Workers::Admin
-        Test
+        ImportNewsWorker
       ]
 end
 

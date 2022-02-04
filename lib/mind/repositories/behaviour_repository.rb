@@ -1,4 +1,4 @@
-class NewRepository < Hanami::Repository
+class BehaviourRepository < Hanami::Repository
   def upsert(id:, **data)
     data = normalize_data_for_update(data)
     New.new root.dataset

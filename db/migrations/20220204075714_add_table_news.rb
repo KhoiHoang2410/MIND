@@ -11,8 +11,8 @@ Hanami::Model.migration do
       column :title_entities, 'jsonb', default: '{}', null: false
       column :abstract_entities, 'jsonb', default: '{}', null: false
 
-      column :created_at, DateTime, null: false
-      column :updated_at, DateTime, null: false
+      column :created_at, DateTime, null: false, default: 'now()'
+      column :updated_at, DateTime, null: false, default: 'now()'
     end
   end
 end
