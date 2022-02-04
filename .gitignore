@@ -1,0 +1,9 @@
+/public/assets*
+/tmp
+.env.local
+.env.*.local
+/MINDlarge_train
+/MINDlarge_dev
+/MINDlarge_test
+/MINDsmall_dev
+/MINDsmall_train

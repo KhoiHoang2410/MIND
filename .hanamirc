@@ -1,0 +1,3 @@
+project=mind
+test=rspec
+template=erb
