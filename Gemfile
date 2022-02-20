@@ -12,6 +12,10 @@ gem 'pg'
 gem 'dotenv', '~> 2.4'
 gem 'httparty'
 
+gem 'open-uri'
+
+gem 'nokogiri'
+
 gem 'multi_json'
 
 group :development do
