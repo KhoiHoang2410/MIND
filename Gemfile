@@ -13,6 +13,7 @@ gem 'dotenv', '~> 2.4'
 gem 'httparty'
 
 gem 'open-uri'
+gem 'uri', '0.10.0'
 
 gem 'nokogiri'
 

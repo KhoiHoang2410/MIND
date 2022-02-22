@@ -18,6 +18,8 @@ SidekiqAdhocJob.configure do |config|
     %w[
         Workers::Admin
         ImportNewsWorker
+        ImportBehavioursWorker
+        BuildBehavioursWorker
       ]
 end
 
