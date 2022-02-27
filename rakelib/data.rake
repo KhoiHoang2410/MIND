@@ -43,28 +43,7 @@ namespace :data do
     new_repo.root.exclude(id: new_ids).delete
 
     deleted_new_ids.each do |new_id|
-      behaviour_repo
-        .root
-        .where(
-          Sequel.lit(
-            "histories::TEXT ILIKE '%" + new_id.to_s + "%'
-              OR impressions::TEXT ILIKE '%" + new_id.to_s + "%'"
-          )
-        )
-        .map_to(Behaviour)
-        .to_a
-        .each do |behaviour|
-          histories = behaviour.histories.select { |new_id| new_repo.find(new_id) }
-          impressions_data = []
-          impressions = behaviour.impressions.select do |impression|
-            new_id, impress = impression.split('-')
-            next false unless new_repo.find(new_id)
-
-            impressions_data << { new: new_id, impress: impress }
-          end
-
-          behaviour_repo.update(behaviour.id, histories: histories, impressions: impressions, impressions_data: impressions_data)
-        end
+      PostProcessDeleteNewIDWorker.perform_async(new_id)
     end
   end
 end
