@@ -4,12 +4,13 @@ namespace :data do
     new_repo = NewRepository.new
     behaviour_repo = BehaviourRepository.new
 
-    new_repo.root.read(
+    deleted_new_ids = new_repo.root.read(
       <<~SQL
         DELETE FROM news
-        WHERE body = '' or category = 'video';
+        WHERE body = '' or category = 'video'
+        RETURNING id;
       SQL
-    ).to_a
+    ).to_a.map(&:id)
 
     behaviour_repo.root.read(
       <<~SQL
@@ -41,17 +42,29 @@ namespace :data do
 
     new_repo.root.exclude(id: new_ids).delete
 
-    behaviour_repo.all.select do |behaviour|
-      histories = behaviour.histories.select { |new_id| new_repo.find(new_id) }
-      impressions_data = []
-      impressions = behaviour.impressions.select do |impression|
-        new_id, impress = impression.split('-')
-        next false unless new_repo.find(new_id)
+    deleted_new_ids.each do |new_id|
+      behaviour_repo
+        .root
+        .where(
+          Sequel.lit(
+            "histories::TEXT ILIKE '%" + new_id.to_s + "%'
+              OR impressions::TEXT ILIKE '%" + new_id.to_s + "%'"
+          )
+        )
+        .map_to(Behaviour)
+        .to_a
+        .each do |behaviour|
+          histories = behaviour.histories.select { |new_id| new_repo.find(new_id) }
+          impressions_data = []
+          impressions = behaviour.impressions.select do |impression|
+            new_id, impress = impression.split('-')
+            next false unless new_repo.find(new_id)
 
-        impressions_data << { new: new_id, impress: impress }
-      end
+            impressions_data << { new: new_id, impress: impress }
+          end
 
-      behaviour_repo.update(behaviour.id, histories: histories, impressions: impressions, impressions_data: impressions_data)
+          behaviour_repo.update(behaviour.id, histories: histories, impressions: impressions, impressions_data: impressions_data)
+        end
     end
   end
 end
