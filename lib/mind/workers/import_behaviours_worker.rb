@@ -2,7 +2,7 @@ class ImportBehavioursWorker
   include Sidekiq::Worker
 
   HEADERS = %i(id user_id created_at histories impressions).freeze
-  IMPORT_FILE = File.join(File.dirname(__FILE__), '../../../MINDsmall_dev/behaviors.tsv').freeze
+  IMPORT_FILE = File.join(File.dirname(__FILE__), '../../../MINDsmall_train/behaviors.tsv').freeze
 
   def perform
     File.foreach(IMPORT_FILE, col_sep: "\t") do |line|
