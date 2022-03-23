@@ -17,8 +17,10 @@ class BuildNewWorker
     attr_reader :new_repo, :new
 
     def normalize_data
+      nokogiri = Nokogiri::HTML.parse(URI.open(new.url).read)
       {
-        body: Nokogiri::HTML.parse(URI.open(new.url).read).css('p').text
+        body: nokogiri.css('p').text,
+        created_at: Time.strptime("#{nokogiri.xpath("//time").first.text.strip} 00:00:00Z", '%m/%d/%Y %H:%M:%S%Z')
       }
     end
 end

@@ -7,7 +7,7 @@ namespace :data do
     deleted_new_ids = new_repo.root.read(
       <<~SQL
         DELETE FROM news
-        WHERE body = '' or category = 'video'
+        WHERE body = '' or category = 'video' or title_entities = '{}' or abstract_entities = '[]' or body isnull
         RETURNING id;
       SQL
     ).to_a.map(&:id)

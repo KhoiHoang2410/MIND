@@ -11,8 +11,8 @@ class PostProcessDeleteNewIDWorker
       .root
       .where(
         Sequel.lit(
-          "histories::TEXT ILIKE '%" + new_id.to_s + "%'
-            OR impressions::TEXT ILIKE '%" + new_id.to_s + "%'"
+          "histories::TEXT ILIKE '%#{new_id.to_s}%'
+            OR impressions_data::TEXT ILIKE '%\"#{new_id.to_s}\"%'"
         )
       )
       .map_to(Behaviour)
